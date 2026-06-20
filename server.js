@@ -26,8 +26,23 @@ This code tells Express that any file in your public directory should be accessi
  http://127.0.0.1:3000/css/main.css. Notice that the public part is not included in the URL.
 */
 
-app.get('/', (req, res) => {
-  res.send('Hello from Express!');
+
+/**
+ * Routes
+ */
+app.get('/', async (req, res) => {
+    const title = 'Home';
+    res.render('home', { title });
+});
+
+app.get('/organizations', async (req, res) => {
+    const title = 'Our Partner Organizations';
+    res.render('organizations', { title });
+});
+
+app.get('/projects', async (req, res) => {
+    const title = 'Service Projects';
+    res.render('projects', { title });
 });
 
 app.listen(PORT, () => {
