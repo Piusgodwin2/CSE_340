@@ -1,4 +1,9 @@
-import express from 'express';
+import express from 'express'; // Import the Express framework to create the server
+import { fileURLToPath } from 'url'; // Import the fileURLToPath function to convert file URLs to file paths
+import path from 'path'; // Import the path module to work with file and directory paths
+
+const __filename = fileURLToPath(import.meta.url); // Get the file path of the current module
+const __dirname = path.dirname(__filename); // Get the directory name of the current module file
 
 // Define the application environment
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
@@ -7,6 +12,19 @@ const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
 
 const app = express();
+
+// Set EJS as the templating engine
+app.set('view engine', 'ejs');
+
+// Tell Express where to find your templates
+app.set('views', path.join(__dirname, 'src/views'));
+
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from the 'public' directory
+/* 
+This code tells Express that any file in your public directory should be accessible directly through
+ your website. For example, your CSS file at public/css/main.css will be available at 
+ http://127.0.0.1:3000/css/main.css. Notice that the public part is not included in the URL.
+*/
 
 app.get('/', (req, res) => {
   res.send('Hello from Express!');
