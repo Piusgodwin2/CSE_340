@@ -1,6 +1,10 @@
 import express from 'express'; // Import the Express framework to create the server
 import { fileURLToPath } from 'url'; // Import the fileURLToPath function to convert file URLs to file paths
 import path from 'path'; // Import the path module to work with file and directory paths
+import { testConnection } from './src/models/db.js';
+
+import { getAllOrganizations } from './src/models/organizations.js';
+
 
 const __filename = fileURLToPath(import.meta.url); // Get the file path of the current module
 const __dirname = path.dirname(__filename); // Get the directory name of the current module file
@@ -36,8 +40,10 @@ app.get('/', async (req, res) => {
 });
 
 app.get('/organizations', async (req, res) => {
+    const organizations = await getAllOrganizations();
+
     const title = 'Our Partner Organizations';
-    res.render('organizations', { title });
+    res.render('organizations', { title, organizations });
 });
 
 app.get('/projects', async (req, res) => {
@@ -45,7 +51,12 @@ app.get('/projects', async (req, res) => {
     res.render('projects', { title });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server is running at http://127.0.0.1:${PORT}`);
-  console.log(`Environment: ${NODE_ENV}`);
+app.listen(PORT, async () => {
+  try {
+    await testConnection();
+    console.log(`Server is running at http://127.0.0.1:${PORT}`);
+    console.log(`Environment: ${NODE_ENV}`);
+  } catch (error) {
+    console.error('Error connecting to the database:', error);
+  }
 });
