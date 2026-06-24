@@ -5,7 +5,7 @@ import { testConnection } from './src/models/db.js';
 
 import { getAllOrganizations } from './src/models/organizations.js';
 import { getAllProjects } from './src/models/projects.js'; // Import the getAllPr the projects model
-
+import { getAllCategories } from './src/models/categories.js'; // Import the getAllCategories function from the categories model
 
 const __filename = fileURLToPath(import.meta.url); // Get the file path of the current module
 const __dirname = path.dirname(__filename); // Get the directory name of the current module file
@@ -54,6 +54,18 @@ app.get('/projects', async (req, res) => {
         res.render('projects', { title, projects });
     } catch (error) {
         console.error('Error fetching projects:', error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.get('/categories', async (req, res) => {
+    try {
+        const categories = await getAllCategories();
+        
+        const title = 'Categories';
+        res.render('categories', { title, categories });
+    } catch (error) {
+        console.error('Error fetching categories:', error);
         res.status(500).send('Server error');
     }
 });
