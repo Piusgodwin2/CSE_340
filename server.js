@@ -4,6 +4,7 @@ import path from 'path'; // Import the path module to work with file and directo
 import { testConnection } from './src/models/db.js';
 
 import { getAllOrganizations } from './src/models/organizations.js';
+import { getAllProjects } from './src/models/projects.js'; // Import the getAllPr the projects model
 
 
 const __filename = fileURLToPath(import.meta.url); // Get the file path of the current module
@@ -47,8 +48,14 @@ app.get('/organizations', async (req, res) => {
 });
 
 app.get('/projects', async (req, res) => {
-    const title = 'Service Projects';
-    res.render('projects', { title });
+    try {
+        const projects = await getAllProjects();
+        const title = 'Service Projects';
+        res.render('projects', { title, projects });
+    } catch (error) {
+        console.error('Error fetching projects:', error);
+        res.status(500).send('Server error');
+    }
 });
 
 app.listen(PORT, async () => {
