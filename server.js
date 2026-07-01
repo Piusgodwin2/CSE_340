@@ -59,26 +59,44 @@ app.get('/organizations', async (req, res) => {
 });
 
 app.get('/projects', async (req, res) => {
-    try {
-        const projects = await getAllProjects();
-        const title = 'Service Projects';
-        res.render('projects', { title, projects });
-    } catch (error) {
-        console.error('Error fetching projects:', error);
-        res.status(500).send('Server error');
-    }
+    const projects = await getAllProjects();
+    const title = 'Service Projects';
+    res.render('projects', { title, projects });
 });
 
 app.get('/categories', async (req, res) => {
-    try {
-        const categories = await getAllCategories();
-        
-        const title = 'Categories';
-        res.render('categories', { title, categories });
-    } catch (error) {
-        console.error('Error fetching categories:', error);
-        res.status(500).send('Server error');
-    }
+    const categories = await getAllCategories();
+    
+    const title = 'Categories';
+    res.render('categories', { title, categories });
+});
+
+// Catch-all route for 404 errors
+app.use((req, res, next) => {
+    const err = new Error('Page Not Found');
+    err.status = 404;
+    next(err);
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+    // Log error details for debugging
+    console.error('Error occurred:', err.message);
+    console.error('Stack trace:', err.stack);
+    
+    // Determine status and template
+    const status = err.status || 500;
+    const template = status === 404 ? '404' : '500';
+    
+    // Prepare data for the template
+    const context = {
+        title: status === 404 ? 'Page Not Found' : 'Server Error',
+        error: err.message,
+        stack: err.stack
+    };
+    
+    // Render the appropriate error template
+    res.status(status).render(`errors/${template}`, context);
 });
 
 app.listen(PORT, async () => {
