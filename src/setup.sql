@@ -73,4 +73,6 @@ VALUES
     (1, 4),
     (2, 5);
 
-SELECT * from project_categories;
+SELECT * from projects;
+delete from projects
+where project_id IN (4,5,6);
